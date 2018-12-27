@@ -1,10 +1,10 @@
 # dbCheck
 
-One Paragraph of project description goes here
+Check specifics of the database quickly. This will provide tools for quick assessments of a database. A little bit like what Trifacta does, but is a less GUI-oriented way. However, this will strive to generate GUI as-and-when necessary.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+Just clone the library and follow installations in the Installing Section.
 
 ## Prerequisites
 
