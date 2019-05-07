@@ -8,6 +8,12 @@
     }, {
         "moduleName" : "checkMedsUsage",
         "path"       : "modules/checkMedsUsage/checkMedsUsage.py",
+        "execute"    : false ,
+        "description": "",
+        "owner"      : ""
+    }, {
+        "moduleName" : "checkDiagnosis",
+        "path"       : "modules/checkDiagnosis/checkDiagnosis.py",
         "execute"    : true ,
         "description": "",
         "owner"      : ""

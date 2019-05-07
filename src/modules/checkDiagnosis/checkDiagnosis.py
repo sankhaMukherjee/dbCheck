@@ -42,8 +42,8 @@ def main(logger, resultsDict):
     print('='*30)
     print('Main function of checkDiagnosis')
     print('='*30)
-    print('We get a copy of the result dictionary over here ...')
-    pprint.pprint(resultsDict)
+    # print('We get a copy of the result dictionary over here ...')
+    # pprint.pprint(resultsDict)
 
     doSomething()
 
