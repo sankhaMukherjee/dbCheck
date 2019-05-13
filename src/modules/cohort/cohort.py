@@ -22,11 +22,47 @@ def generateSchema(logger, schemaName):
 
     try:
         query = SQL('CREATE SCHEMA if not exists {}').format( Identifier(schemaName) )
-        pgIO.commitData( query, schemaName )
+        pgIO.commitData( query )
     except Exception as e:
         logger.error(f'Unable to generate the schema [{schemaName}]: {e}')
 
     return
+
+@lD.log(logBase + '.generateTable')
+def generateTable(logger, schemaName, tableName):
+    '''Generates the required schema
+    
+    This function generates the required schema
+    
+    Parameters
+    ----------
+    logger : {logging.Logger}
+        The logger used for logging error information
+    '''
+
+    try:
+        query = SQL('''
+            CREATE TABLE if not exists {}.{} (
+                siteid        text,
+                backgroundid  text,
+                diagn         text[],
+                dsmno         text[],
+                n_ednum       integer,
+                n_days        integer,
+                n_days_meds   integer,
+                n_days_stress integer,
+                n_days_cgi    integer,
+                n_days_mse    integer,
+                n_days_gaf    integer) ''').format(
+                Identifier(schemaName),
+                Identifier(tableName) )
+
+        pgIO.commitData(query)
+    except Exception as e:
+        logger.error(f'Unable to generate the tale [{schemaName}.{tableName}]: {e}')
+
+    return
+
 
 @lD.log(logBase + '.main')
 def main(logger, resultsDict):
@@ -54,6 +90,7 @@ def main(logger, resultsDict):
 
     cfg = json.load(open('../config/modules/cohort.json'))['params']
     generateSchema(cfg['schema'])
+    generateTable(cfg['schema'], cfg['table'])
 
     print('Getting out of cohort')
     print('-'*30)
