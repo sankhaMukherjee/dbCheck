@@ -113,7 +113,14 @@ def main(logger, resultsDict):
     gaf = utils.findUserGAF_nDays(siteId, backgroundId, daysMapper)
     results.append(('n_days_gaf', gaf))
 
-    print(results)
+    mse = utils.findUserMSE_nDays(siteId, backgroundId, daysMapper)
+    results.append(('n_days_mse', mse))
+
+    stress = utils.findUserMSE_nDays(siteId, backgroundId, daysMapper)
+    results.append(('n_days_stress', stress))
+
+
+    print(dict(results))
 
     print('Getting out of cohort')
     print('-'*30)

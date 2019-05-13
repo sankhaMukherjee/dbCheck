@@ -71,7 +71,7 @@ def findUserGAF_nDays(logger, siteId, backgroundId, daysMapper):
 
     try:
         query = '''
-            SELECT ednum 
+            SELECT distinct ednum 
             from
                 raw_data.gaf
             where
@@ -91,7 +91,6 @@ def findUserGAF_nDays(logger, siteId, backgroundId, daysMapper):
             f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
 
     return results
-
 
 @lD.log(logBase + '.findUserCGI_nDays')
 def findUserCGI_nDays(logger, siteId, backgroundId, daysMapper):
@@ -117,7 +116,7 @@ def findUserCGI_nDays(logger, siteId, backgroundId, daysMapper):
 
     try:
         query = '''
-            SELECT ednum 
+            SELECT distinct ednum 
             from
                 raw_data.cgi
             where
@@ -134,5 +133,93 @@ def findUserCGI_nDays(logger, siteId, backgroundId, daysMapper):
     except Exception as e:
         logger.error(f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
 
+
+    return results
+
+@lD.log(logBase + '.findUserMSE_nDays')
+def findUserMSE_nDays(logger, siteId, backgroundId, daysMapper):
+    """[summary]
+    
+    Parameters
+    ----------
+    logger : [type]
+        [description]
+    siteId : [type]
+        [description]
+    backgroundId : [type]
+        [description]
+    daysMapper : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    """
+    results = None
+
+    try:
+        query = '''
+            SELECT distinct ednum 
+            from
+                raw_data.mse
+            where
+                siteid       = %s and 
+                backgroundid = %s
+        '''
+
+        results = pgIO.getAllData(query, (siteId, backgroundId))
+        results = [daysMapper.get(r[0])
+                   for r in results if daysMapper.get(r[0]) is not None]
+        results = len(set(results))
+        return results
+
+    except Exception as e:
+        logger.error(
+            f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
+
+    return results
+
+@lD.log(logBase + '.findUserStress_nDays')
+def findUserStress_nDays(logger, siteId, backgroundId, daysMapper):
+    """[summary]
+    
+    Parameters
+    ----------
+    logger : [type]
+        [description]
+    siteId : [type]
+        [description]
+    backgroundId : [type]
+        [description]
+    daysMapper : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    """
+    results = None
+
+    try:
+        query = '''
+            SELECT distinct ednum 
+            from
+                raw_data.psycho
+            where
+                siteid       = %s and 
+                backgroundid = %s
+        '''
+
+        results = pgIO.getAllData(query, (siteId, backgroundId))
+        results = [daysMapper.get(r[0])
+                   for r in results if daysMapper.get(r[0]) is not None]
+        results = len(set(results))
+        return results
+
+    except Exception as e:
+        logger.error(
+            f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
 
     return results
