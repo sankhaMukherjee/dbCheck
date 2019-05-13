@@ -110,6 +110,9 @@ def main(logger, resultsDict):
     cgi = utils.findUserCGI_nDays(siteId, backgroundId, daysMapper)
     results.append(('n_days_cgi', cgi))
 
+    gaf = utils.findUserGAF_nDays(siteId, backgroundId, daysMapper)
+    results.append(('n_days_gaf', gaf))
+
     print(results)
 
     print('Getting out of cohort')

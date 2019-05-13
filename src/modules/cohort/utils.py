@@ -46,6 +46,53 @@ def findUserBasics(logger, siteId, backgroundId):
 
     return 
 
+
+@lD.log(logBase + '.findUserGAF_nDays')
+def findUserGAF_nDays(logger, siteId, backgroundId, daysMapper):
+    """[summary]
+    
+    Parameters
+    ----------
+    logger : [type]
+        [description]
+    siteId : [type]
+        [description]
+    backgroundId : [type]
+        [description]
+    daysMapper : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    """
+    results = None
+
+    try:
+        query = '''
+            SELECT ednum 
+            from
+                raw_data.gaf
+            where
+                siteid       = %s and 
+                backgroundid = %s and 
+                gaf is not null
+        '''
+
+        results = pgIO.getAllData(query, (siteId, backgroundId))
+        results = [daysMapper.get(r[0])
+                   for r in results if daysMapper.get(r[0]) is not None]
+        results = len(set(results))
+        return results
+
+    except Exception as e:
+        logger.error(
+            f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
+
+    return results
+
+
 @lD.log(logBase + '.findUserCGI_nDays')
 def findUserCGI_nDays(logger, siteId, backgroundId, daysMapper):
     """[summary]
