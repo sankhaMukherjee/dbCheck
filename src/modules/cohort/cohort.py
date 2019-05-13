@@ -4,6 +4,8 @@ import json, pprint
 from psycopg2.sql import SQL, Identifier, Literal
 from lib.databaseIO import pgIO
 
+from modules.cohort import utils
+
 config = json.load(open('../config/config.json'))
 logBase = config['logging']['logBase'] + '.modules.cohort.cohort'
 
@@ -91,6 +93,24 @@ def main(logger, resultsDict):
     cfg = json.load(open('../config/modules/cohort.json'))['params']
     generateSchema(cfg['schema'])
     generateTable(cfg['schema'], cfg['table'])
+
+    siteId, backgroundId = 'ArapahoeHouse', '1'
+    results = utils.findUserBasics(siteId, backgroundId)
+    if results is None:
+        print(f'Unable to get information for user {siteId},{backgroundId}')
+        return None
+
+    nEdnum, nDays, daysMapper = results
+    results = [
+        ('siteid', siteId),
+        ('backgroundid', backgroundId),
+        ('n_ednum', nEdnum),
+        ('n_days', nDays),
+    ]
+    cgi = utils.findUserCGI_nDays(siteId, backgroundId, daysMapper)
+    results.append(('n_days_cgi', cgi))
+
+    print(results)
 
     print('Getting out of cohort')
     print('-'*30)
