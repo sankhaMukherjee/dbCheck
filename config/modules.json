@@ -14,6 +14,12 @@
     }, {
         "moduleName" : "checkDiagnosis",
         "path"       : "modules/checkDiagnosis/checkDiagnosis.py",
+        "execute"    : false ,
+        "description": "",
+        "owner"      : ""
+    }, {
+        "moduleName" : "cohort",
+        "path"       : "modules/cohort/cohort.py",
         "execute"    : true ,
         "description": "",
         "owner"      : ""
