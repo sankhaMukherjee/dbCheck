@@ -119,8 +119,10 @@ def main(logger, resultsDict):
     stress = utils.findUserMSE_nDays(siteId, backgroundId, daysMapper)
     results.append(('n_days_stress', stress))
 
-
-    print(dict(results))
+    diagn = utils.findUserDiagn(siteId, backgroundId, daysMapper)
+    results += diagn
+    
+    pprint.pprint(dict(results))
 
     print('Getting out of cohort')
     print('-'*30)

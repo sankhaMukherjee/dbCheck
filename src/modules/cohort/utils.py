@@ -223,3 +223,57 @@ def findUserStress_nDays(logger, siteId, backgroundId, daysMapper):
             f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
 
     return results
+
+@lD.log(logBase + '.findUserDiagn')
+def findUserDiagn(logger, siteId, backgroundId, daysMapper):
+    """[summary]
+    
+    Parameters
+    ----------
+    logger : [type]
+        [description]
+    siteId : [type]
+        [description]
+    backgroundId : [type]
+        [description]
+    daysMapper : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    """
+    results = []
+
+    try:
+        query = '''
+            SELECT 
+                siteid,
+                array_agg( distinct ednum ),
+                array_agg( distinct dsmno ),
+                array_agg( distinct diagnosis )
+            from
+                raw_data.pdiagnose
+            where
+                siteid       = %s and 
+                backgroundid = %s
+            group by
+                siteid
+        '''
+
+        results = pgIO.getAllData(query, (siteId, backgroundId))
+        results1 = [daysMapper.get(r)
+                   for r in results[0][1] if daysMapper.get(r) is not None]
+        results1 = len(set(results1))
+        results2 = [('n_days_diagn', results1)]
+        results2.append(('dsmno', results[0][2]))
+        results2.append(('diagn', results[0][3]))
+
+        return results2
+
+    except Exception as e:
+        logger.error(
+            f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
+
+    return results
