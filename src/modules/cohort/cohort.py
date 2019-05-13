@@ -95,34 +95,9 @@ def main(logger, resultsDict):
     generateTable(cfg['schema'], cfg['table'])
 
     siteId, backgroundId = 'ArapahoeHouse', '1'
-    results = utils.findUserBasics(siteId, backgroundId)
-    if results is None:
-        print(f'Unable to get information for user {siteId},{backgroundId}')
-        return None
+    results = utils.findUserData(siteId, backgroundId)
 
-    nEdnum, nDays, daysMapper = results
-    results = [
-        ('siteid', siteId),
-        ('backgroundid', backgroundId),
-        ('n_ednum', nEdnum),
-        ('n_days', nDays),
-    ]
-    cgi = utils.findUserCGI_nDays(siteId, backgroundId, daysMapper)
-    results.append(('n_days_cgi', cgi))
-
-    gaf = utils.findUserGAF_nDays(siteId, backgroundId, daysMapper)
-    results.append(('n_days_gaf', gaf))
-
-    mse = utils.findUserMSE_nDays(siteId, backgroundId, daysMapper)
-    results.append(('n_days_mse', mse))
-
-    stress = utils.findUserMSE_nDays(siteId, backgroundId, daysMapper)
-    results.append(('n_days_stress', stress))
-
-    diagn = utils.findUserDiagn(siteId, backgroundId, daysMapper)
-    results += diagn
-    
-    pprint.pprint(dict(results))
+    print(results)
 
     print('Getting out of cohort')
     print('-'*30)
