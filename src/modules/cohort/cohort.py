@@ -65,7 +65,6 @@ def generateTable(logger, schemaName, tableName):
 
     return
 
-
 @lD.log(logBase + '.main')
 def main(logger, resultsDict):
     '''main function for cohort
@@ -94,10 +93,19 @@ def main(logger, resultsDict):
     generateSchema(cfg['schema'])
     generateTable(cfg['schema'], cfg['table'])
 
-    siteId, backgroundId = 'ArapahoeHouse', '1'
-    results = utils.findUserData(siteId, backgroundId)
+    # siteId, backgroundId = 'ArapahoeHouse', '1'
+    # results = utils.findUserData(siteId, backgroundId)
+    # print(results)
 
-    print(results)
+    print('Getting users ...')
+    users = pgIO.getAllData("select siteid, id from raw_data.background limit 10")
+
+    print('Getting data for users ...')
+    header, data = utils.findDataUsers(users)
+    print(header)
+    for d in data:
+        print(d)
+    
 
     print('Getting out of cohort')
     print('-'*30)

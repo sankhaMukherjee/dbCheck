@@ -2,6 +2,8 @@ from logs import logDecorator as lD
 import json
 import pprint
 
+from tqdm import tqdm
+
 from psycopg2.sql import SQL, Identifier, Literal
 from lib.databaseIO import pgIO
 
@@ -288,8 +290,7 @@ def findUserDiagn(logger, siteId, backgroundId, daysMapper):
     [type]
         [description]
     """
-    results = []
-
+    
     try:
         query = '''
             SELECT 
@@ -319,6 +320,12 @@ def findUserDiagn(logger, siteId, backgroundId, daysMapper):
     except Exception as e:
         logger.error(
             f'Unable to generate CGI for the user ({siteId},{backgroundId}): {e}')
+
+    results = [
+        ('n_days_diagn', None),
+        ('dsmno', []),
+        ('diagn', []),
+    ]
 
     return results
 
@@ -363,3 +370,30 @@ def findUserData(logger, siteId, backgroundId):
         return None
 
     return
+
+@lD.log(logBase + '.findDataUsers')
+def findDataUsers(logger, userList):
+    """[summary]
+    
+    Parameters
+    ----------
+    logger : [type]
+        [description]
+    userList : [type]
+        [description]
+    
+    Returns
+    -------
+    [type]
+        [description]
+    """
+    
+    allData = []
+    for user in tqdm(userList):
+        userData = findUserData(*user)
+        headers, values = zip(*userData)
+        allData.append( values )
+
+    headers = headers
+
+    return headers, allData
