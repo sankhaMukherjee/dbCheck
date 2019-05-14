@@ -397,3 +397,25 @@ def findDataUsers(logger, userList):
     headers = headers
 
     return headers, allData
+
+@lD.log(logBase + '.insertDataIntoDatabase')
+def insertDataIntoDatabase(logger, header, data, schema, table):
+
+    try:
+        formatSpecs = [ Identifier(schema), Identifier(table) ]
+        header = [Identifier(h) for h in header]
+        formatSpecs += header
+
+        query = SQL('''
+            insert into {}.{} (
+                {}, {}, {}, {}, {}, {},
+                {}, {}, {}, {}, {}, {} )
+                values %s
+            ''').format( *formatSpecs )
+
+        pgIO.commitDataList( query, data )
+    except Exception as e:
+        logger.error(f'Unable to write data into the database: {e}')
+        logger.error(f'Data not written: {data}')
+
+    return

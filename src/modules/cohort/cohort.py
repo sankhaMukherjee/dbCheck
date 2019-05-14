@@ -105,6 +105,9 @@ def main(logger, resultsDict):
     print(header)
     for d in data:
         print(d)
+
+    print('Writing data to output ...')
+    utils.insertDataIntoDatabase(header, data, cfg['schema'], cfg['table'])
     
 
     print('Getting out of cohort')
