@@ -5,6 +5,9 @@ from psycopg2.sql import SQL, Identifier, Literal
 from lib.databaseIO import pgIO
 
 from modules.cohort import utils
+from multiprocessing import Pool
+
+from tqdm import tqdm
 
 config = json.load(open('../config/config.json'))
 logBase = config['logging']['logBase'] + '.modules.cohort.cohort'
@@ -86,29 +89,27 @@ def main(logger, resultsDict):
     print('='*30)
     print('Main function of cohort')
     print('='*30)
-    print('We get a copy of the result dictionary over here ...')
-    pprint.pprint(resultsDict)
-
+    
     cfg = json.load(open('../config/modules/cohort.json'))['params']
     generateSchema(cfg['schema'])
     generateTable(cfg['schema'], cfg['table'])
+
+    p = Pool()
 
     # siteId, backgroundId = 'ArapahoeHouse', '1'
     # results = utils.findUserData(siteId, backgroundId)
     # print(results)
 
-    print('Getting users ...')
-    users = pgIO.getAllData("select siteid, id from raw_data.background limit 10")
+    totalUsers = 510000
+    chunkSize  = 100
+    query = "select siteid, id from raw_data.background"
+    usersIter = pgIO.getDataIterator(query, chunks=4)
+    for header, data in tqdm(p.imap(utils.findDataUsers, usersIter), total=4):
 
-    print('Getting data for users ...')
-    header, data = utils.findDataUsers(users)
-    print(header)
-    for d in data:
-        print(d)
+        utils.insertDataIntoDatabase(header, data, cfg['schema'], cfg['table'])
+        
 
-    print('Writing data to output ...')
-    utils.insertDataIntoDatabase(header, data, cfg['schema'], cfg['table'])
-    
+    p.close()
 
     print('Getting out of cohort')
     print('-'*30)
