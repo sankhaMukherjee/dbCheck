@@ -96,19 +96,14 @@ def main(logger, resultsDict):
 
     p = Pool()
 
-    # siteId, backgroundId = 'ArapahoeHouse', '1'
-    # results = utils.findUserData(siteId, backgroundId)
-    # print(results)
-
     totalUsers = 510000
-    chunkSize  = 100
+    chunkSize  = 1000
+    N = totalUsers // chunkSize
     query = "select siteid, id from raw_data.background"
-    usersIter = pgIO.getDataIterator(query, chunks=4)
-    for header, data in tqdm(p.imap(utils.findDataUsers, usersIter), total=4):
-
+    usersIter = pgIO.getDataIterator(query, chunks=chunkSize)
+    for header, data in tqdm(p.imap(utils.findDataUsers, usersIter), total=N):
         utils.insertDataIntoDatabase(header, data, cfg['schema'], cfg['table'])
         
-
     p.close()
 
     print('Getting out of cohort')
